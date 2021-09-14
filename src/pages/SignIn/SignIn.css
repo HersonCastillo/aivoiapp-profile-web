@@ -1,0 +1,14 @@
+.signin__content {
+  padding: 2rem;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  margin: 5rem 0;
+}
+
+@media screen and (max-width: 600px) {
+  .signin__content {
+    margin: 3rem 1rem;
+    border-style: none;
+    padding: 0;
+  }
+}
