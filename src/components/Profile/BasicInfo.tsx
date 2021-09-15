@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormHelperText,
   FormErrorMessage,
-  ButtonGroup,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { ProfileContext } from '../../store/profile.context';
@@ -69,12 +68,10 @@ const BasicInfo = ({ onSubmit, isLoading }: IBasicInfoProps): ReactElement => {
               </FormControl>
             </Box>
             <Box className="actions">
-              <ButtonGroup variant="outline" spacing="6">
-                <Button isLoading={isLoading} type="submit" colorScheme="teal">
-                  Guardar
-                </Button>
-                <Button onClick={() => setIsEditable(false)}>Cancelar</Button>
-              </ButtonGroup>
+              <Button onClick={() => setIsEditable(false)}>Cancelar</Button>
+              <Button isLoading={isLoading} type="submit" colorScheme="teal">
+                Guardar
+              </Button>
             </Box>
           </SimpleGrid>
         </form>

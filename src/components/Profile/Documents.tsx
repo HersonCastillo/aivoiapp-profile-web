@@ -124,7 +124,7 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
         </Box>
         <Box>
           {files.map((file, index) => (
-            <Tag size="lg" marginBottom={1}>
+            <Tag size="lg" marginBottom={1} key={`file-item-id-${index}`}>
               <Avatar
                 src={file.content}
                 size="xs"
