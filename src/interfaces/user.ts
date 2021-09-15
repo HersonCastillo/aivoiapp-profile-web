@@ -17,4 +17,5 @@ export interface IUser {
   tag: unknown;
   updated_at?: string;
   data_bank_complete: 0 | 1;
+  user_id?: number;
 }
