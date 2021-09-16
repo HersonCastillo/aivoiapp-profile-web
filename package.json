@@ -2,7 +2,7 @@
   "name": "aivoi-profile-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/",
+  "homepage": "/management",
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.6.7",

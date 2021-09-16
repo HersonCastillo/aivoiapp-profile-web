@@ -17,7 +17,7 @@ axiosApi.interceptors.response.use(
       sessionStorage.removeItem('user');
       sessionStorage.removeItem('role');
 
-      window.location.href = '/linking?expired=true';
+      window.location.href = '#/linking?expired=true';
     }
     return error;
   },
