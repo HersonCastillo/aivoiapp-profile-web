@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import ProfileProvider from '../pages/Profile/ProfileContext';
+import ProfileProvider from '../pages/Profile/ProfileProvider';
 import SignInProvider from '../pages/SignIn/SignInProvider';
 
 const Providers = ({ children }: IProvidersProps): ReactElement => (
