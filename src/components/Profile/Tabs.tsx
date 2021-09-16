@@ -9,12 +9,17 @@ const ProfileTabs = ({
   onBasicInfoEdit,
   onDocumentsEdit,
   isLoading,
+  showCompleteConfiguration,
 }: IProfileTabsProps): ReactElement => (
   <Tabs>
     <TabList>
       <Tab>General</Tab>
-      <Tab>Bolsa</Tab>
-      <Tab>Documentos</Tab>
+      {showCompleteConfiguration && (
+        <>
+          <Tab>Bolsa</Tab>
+          <Tab>Documentos</Tab>
+        </>
+      )}
     </TabList>
 
     <TabPanels>
@@ -33,6 +38,7 @@ const ProfileTabs = ({
 
 interface IProfileTabsProps {
   isLoading: boolean;
+  showCompleteConfiguration: boolean;
   onBasicInfoEdit: (data: IBasicInfoFormData) => void;
   onBankInfoEdit: (data: IBankInfoFormData) => void;
   onDocumentsEdit: (data: IDocumentsFormData) => void;

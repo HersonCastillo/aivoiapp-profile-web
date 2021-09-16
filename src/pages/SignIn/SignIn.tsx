@@ -13,15 +13,13 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-
-import './SignIn.css';
-import { API_URL } from '../../config/environments';
 import { AIVOI_ROLES } from '../../utils/roles';
 import { useHistory } from 'react-router';
-import { IAPIResponse } from '../../interfaces/api-response';
-import { ILoginResponse } from '../../interfaces/login-response';
 import { AuthContext } from '../../store/auth.context';
 import { ProfileContext } from '../../store/profile.context';
+import { doLogin } from '../../services/auth.service';
+
+import './SignIn.css';
 
 const SignIn = (): ReactElement => {
   const history = useHistory();
@@ -35,50 +33,33 @@ const SignIn = (): ReactElement => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const onSubmit = async ({
-    email,
-    password,
-    role,
-  }: ISignInFormData): Promise<unknown> => {
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('password', password);
-    formData.append('role', String(role));
-
+  const onSubmit = async ({ email, password, role }: ISignInFormData) => {
     try {
-      const responseType = await fetch(`${API_URL}/login_user`, {
-        method: 'post',
-        body: formData,
-      });
-      const { data, error, message }: IAPIResponse<ILoginResponse> =
-        await responseType.json();
+      const {
+        data: { data },
+      } = await doLogin(email, password, role);
+      const { token, user } = data;
+      if (token && user) {
+        sessionStorage.setItem('role', String(role));
+        sessionStorage.setItem('token', token);
+        sessionStorage.setItem('user', JSON.stringify(user));
 
-      if (!error) {
-        const { token, user } = data;
-        if (token && user) {
-          sessionStorage.setItem('role', String(role));
-          sessionStorage.setItem('token', token);
-          sessionStorage.setItem('user', JSON.stringify(user));
-
-          context.setToken(token);
-          profileContext.setProfile(user, role);
-          history.push('/profile');
-        } else {
-          toast({
-            status: 'error',
-            title: 'No te hemos podido reconocer :(',
-            description: 'Error de aplicacion (2007).',
-          });
-        }
+        context.setToken(token);
+        profileContext.setProfile(user, role);
+        history.push('/profile');
       } else {
         toast({
           status: 'error',
           title: 'No te hemos podido reconocer :(',
-          description: message ?? 'No se puede iniciar sesion',
+          description: 'Error de aplicacion (2007).',
         });
       }
-    } catch (error) {
-      return null;
+    } catch (ex) {
+      toast({
+        status: 'error',
+        title: 'No te hemos podido reconocer :(',
+        description: 'Verifica que tus credenciales esten correctas.',
+      });
     }
   };
 

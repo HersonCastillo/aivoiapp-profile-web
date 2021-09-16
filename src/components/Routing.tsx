@@ -3,11 +3,11 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
   useHistory,
 } from 'react-router-dom';
 import { IUser } from '../interfaces/user';
 import Profile from '../pages/Profile/Profile';
+import RecoverPassword from '../pages/RecoverPassword/RecoverPassword';
 import SignIn from '../pages/SignIn/SignIn';
 import { AuthContext } from '../store/auth.context';
 import { ProfileContext } from '../store/profile.context';
@@ -30,6 +30,7 @@ const Routing = (): ReactElement => {
         profileContext.setProfile(userDecoded, +role || AIVOI_ROLES.CLIENT);
         authContext.setToken(token ?? null);
         setFirstLoad(false);
+        history.push('/profile');
       }
     } catch (ex) {}
   }, [profileContext, authContext, history, isFirstLoad, setFirstLoad]);
@@ -40,11 +41,17 @@ const Routing = (): ReactElement => {
         <AuthContext.Consumer>
           {({ token }) => (
             <>
-              {!token && <Route exact path="/login" component={SignIn} />}
+              {!token && (
+                <>
+                  <Route exact path="/login" component={SignIn} />
+                  <Route
+                    exact
+                    path="/recover-password"
+                    component={RecoverPassword}
+                  />
+                </>
+              )}
               {token && <Route exact path="/profile" component={Profile} />}
-              <Route path="*">
-                <Redirect to={!!token ? '/profile' : '/login'} />
-              </Route>
             </>
           )}
         </AuthContext.Consumer>
