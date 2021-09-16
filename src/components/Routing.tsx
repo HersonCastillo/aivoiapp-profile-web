@@ -6,6 +6,7 @@ import {
   useHistory,
 } from 'react-router-dom';
 import { IUser } from '../interfaces/user';
+import AuthenticationRedirect from '../pages/AuthenticationRedirect/AuthenticationRedirect';
 import Profile from '../pages/Profile/Profile';
 import RecoverPassword from '../pages/RecoverPassword/RecoverPassword';
 import SignIn from '../pages/SignIn/SignIn';
@@ -43,6 +44,11 @@ const Routing = (): ReactElement => {
             <>
               {!token && (
                 <>
+                  <Route
+                    exact
+                    path="/linking"
+                    component={AuthenticationRedirect}
+                  />
                   <Route exact path="/login" component={SignIn} />
                   <Route
                     exact

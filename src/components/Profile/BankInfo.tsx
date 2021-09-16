@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import {
   Select,
   Box,
@@ -14,6 +14,8 @@ import {
   AlertIcon,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
+import { getBanks } from '../../services/profile.service';
+import { IBank } from '../../interfaces/bank';
 
 const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
   const {
@@ -21,6 +23,13 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [banks, setBanks] = useState<IBank[]>([]);
+
+  useEffect(() => {
+    getBanks().then(({ data: response }) => {
+      setBanks(response.data);
+    });
+  }, [setBanks]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -42,11 +51,14 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
               placeholder="Selecciona un banco"
               {...register('bankName', {
                 required: true,
+                valueAsNumber: true,
               })}
             >
-              <option value="option1">BANCO DE AMERICA CENTRAL</option>
-              <option value="option2">BANCO CUSCATLAN</option>
-              <option value="option3">BANCO DAVIVIENDA</option>
+              {banks.map(({ name, id }, index) => (
+                <option key={`bank-item-id-${index}`} value={id}>
+                  {name}
+                </option>
+              ))}
             </Select>
             <FormErrorMessage>
               {errors.bankName &&
@@ -67,8 +79,8 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
                 required: true,
               })}
             >
-              <option value="option1">Ahorro</option>
-              <option value="option2">Corriente</option>
+              <option value="Ahorro">Ahorro</option>
+              <option value="Corriente">Corriente</option>
             </Select>
             <FormErrorMessage>
               {errors.accountType &&
@@ -82,7 +94,7 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
             isRequired
             isInvalid={errors.accountNumber}
           >
-            <FormLabel>Tipo de cuenta</FormLabel>
+            <FormLabel>Numero de cuenta</FormLabel>
             <Input
               placeholder="Numero de cuenta"
               {...register('accountNumber', {

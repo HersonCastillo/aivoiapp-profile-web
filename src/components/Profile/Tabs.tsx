@@ -11,7 +11,7 @@ const ProfileTabs = ({
   isLoading,
   showCompleteConfiguration,
 }: IProfileTabsProps): ReactElement => (
-  <Tabs>
+  <Tabs variant="soft-rounded" colorScheme="cyan" isFitted isLazy>
     <TabList>
       <Tab>General</Tab>
       {showCompleteConfiguration && (
@@ -21,7 +21,6 @@ const ProfileTabs = ({
         </>
       )}
     </TabList>
-
     <TabPanels>
       <TabPanel>
         <BasicInfo isLoading={isLoading} onSubmit={onBasicInfoEdit} />

@@ -1,4 +1,10 @@
-import React, { ReactElement, useContext, useEffect, useState } from 'react';
+import React, {
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   SimpleGrid,
   Box,
@@ -21,12 +27,13 @@ import {
 } from '@chakra-ui/react';
 import './Profile.css';
 import { ProfileContext } from '../../store/profile.context';
-// import { AuthContext } from '../../store/auth.context';
 import ProfileTabs from '../../components/Profile/Tabs';
 import { IBasicInfoFormData } from '../../components/Profile/BasicInfo';
 import { getUserData, updateProfile } from '../../services/profile.service';
 import { AIVOI_ROLES } from '../../utils/roles';
 import { useFilePicker } from 'use-file-picker';
+import { IBankInfoFormData } from '../../components/Profile/BankInfo';
+import { IDocumentsFormData } from '../../components/Profile/Documents';
 
 const Profile = (): ReactElement => {
   const toast = useToast();
@@ -53,6 +60,7 @@ const Profile = (): ReactElement => {
     );
     setIsLoading(false);
     if (response) {
+      retrieveUserInfo();
       toast({
         title: 'Imagen cambiada',
         description: 'Tu foto de perfil ahora esta actualizada.',
@@ -71,6 +79,7 @@ const Profile = (): ReactElement => {
     );
     setIsLoading(false);
     if (response) {
+      retrieveUserInfo();
       toast({
         title: 'Datos guardados',
         description: 'Tu informacion fue actualizada sin problemas!',
@@ -79,9 +88,21 @@ const Profile = (): ReactElement => {
     }
   };
 
-  const onBankInfoEdit = () => null;
+  const onBankInfoEdit = (data: IBankInfoFormData) => {
+    console.log(data);
+  };
 
-  const onDocumentsEdit = () => null;
+  const onDocumentsEdit = (data: IDocumentsFormData) => {
+    console.log(data);
+  };
+
+  const retrieveUserInfo = useCallback(() => {
+    if (user) {
+      getUserData(user.user_id!).then((response) => {
+        setProfile(response.data?.data, userRole ?? AIVOI_ROLES.CLIENT);
+      });
+    }
+  }, [user, userRole, setProfile]);
 
   useEffect(() => {
     if (user && isFirstLoad) {
@@ -90,11 +111,9 @@ const Profile = (): ReactElement => {
         setShowCompleteConfiguration(true);
         setIsBankDataCompleted(Boolean(user?.data_bank_complete));
       }
-      getUserData(user.user_id!).then((response) => {
-        setProfile(response.data?.data[0], userRole ?? AIVOI_ROLES.CLIENT);
-      });
+      retrieveUserInfo();
     }
-  }, [user, isFirstLoad, setProfile, setFirstLoad, userRole]);
+  }, [user, isFirstLoad, setFirstLoad, retrieveUserInfo]);
 
   return (
     <div className="profile__content">

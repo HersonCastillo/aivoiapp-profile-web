@@ -15,6 +15,7 @@ import {
   CloseButton,
   Alert,
   AlertIcon,
+  useToast,
 } from '@chakra-ui/react';
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { NIT_PATTERN } from '../../utils/patterns';
@@ -22,6 +23,7 @@ import { useFilePicker } from 'use-file-picker';
 import { FileContent } from 'use-file-picker/dist/interfaces';
 
 const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
+  const toast = useToast();
   const {
     register,
     handleSubmit,
@@ -44,10 +46,20 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
   }, [filesContent, setFiles]);
 
   const onSubmitData = (data: IDocumentsFormData) => {
-    onSubmit({
-      ...data,
-      files,
-    });
+    // 3 files allowed only
+    if (files.length === 3) {
+      onSubmit({
+        ...data,
+        files,
+      });
+    } else {
+      toast({
+        status: 'warning',
+        title: 'Numero de archivos incorrecto',
+        description:
+          'Debes de adjuntar un total de 3 fotos: tarjeta de circulacion, licencia de conducir y solvencia policial.',
+      });
+    }
   };
 
   return (
@@ -107,7 +119,7 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
               Para hacer una correcta validacion de los datos anteriores, te
               solicitamos que agregues una foto de tus documentos:&nbsp;
               <b>
-                tarjeta de circulacion, tarjeta de conducir y solvencia
+                tarjeta de circulacion, licencia de conducir y solvencia
                 policial.
               </b>
             </p>
