@@ -40,6 +40,7 @@ const BasicInfo = ({ onSubmit, isLoading }: IBasicInfoProps): ReactElement => {
                       '^([a-zA-ZÁÉÍÓÚÜáéíóúü]{3,}[\\W]?){1,6}$',
                     ),
                   })}
+                  defaultValue={user?.name}
                 />
                 <FormHelperText>Debe ser tu nombre real.</FormHelperText>
                 <FormErrorMessage>
@@ -57,6 +58,7 @@ const BasicInfo = ({ onSubmit, isLoading }: IBasicInfoProps): ReactElement => {
                     required: true,
                     pattern: new RegExp('^[276][0-9]{7}$'),
                   })}
+                  defaultValue={user?.phone}
                 />
                 <FormHelperText>
                   Debe ser un numero real al que podamos contactarte en una

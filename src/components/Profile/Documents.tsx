@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   SimpleGrid,
@@ -16,11 +16,14 @@ import {
   Alert,
   AlertIcon,
   useToast,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { NIT_PATTERN } from '../../utils/patterns';
 import { useFilePicker } from 'use-file-picker';
 import { FileContent } from 'use-file-picker/dist/interfaces';
+import { ProfileContext } from '../../store/profile.context';
 
 const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
   const toast = useToast();
@@ -34,6 +37,7 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
     readAs: 'DataURL',
     multiple: true,
   });
+  const { user } = useContext(ProfileContext);
   const [files, setFiles] = useState<FileContent[]>([]);
 
   const deleteFile = (index: number) => {
@@ -47,7 +51,7 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
 
   const onSubmitData = (data: IDocumentsFormData) => {
     // 3 files allowed only
-    if (files.length === 4) {
+    if (files.length === 4 || files.length === 0) {
       onSubmit({
         ...data,
         files,
@@ -79,6 +83,7 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
                 required: true,
                 pattern: new RegExp(NIT_PATTERN),
               })}
+              defaultValue={user?.num_licence}
             />
             <FormHelperText>
               El documento debe estar vigente para poder aplicar.
@@ -102,6 +107,7 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
                 required: true,
                 pattern: new RegExp(NIT_PATTERN),
               })}
+              defaultValue={user?.num_card_circulation}
             />
             <FormHelperText>
               El documento debe estar vigente para poder aplicar.
@@ -111,6 +117,30 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
                 'El numero de documento debe ser valido.'}
             </FormErrorMessage>
           </FormControl>
+        </Box>
+        <Box>
+          <Wrap>
+            {user?.photo_licence && (
+              <WrapItem>
+                <Avatar name="Licencia de conducir" src={user.photo_licence} />
+              </WrapItem>
+            )}
+            {user?.photo_background && (
+              <WrapItem>
+                <Avatar name="Tarjeta de circulacion" src={user.photo_background} />
+              </WrapItem>
+            )}
+            {user?.photo_dui && (
+              <WrapItem>
+                <Avatar name="DUI" src={user.photo_dui} />
+              </WrapItem>
+            )}
+            {user?.photo_solvency_pnc && (
+              <WrapItem>
+                <Avatar name="Solvencia PNC" src={user.photo_solvency_pnc} />
+              </WrapItem>
+            )}
+          </Wrap>
         </Box>
         <Box>
           <Alert status="info" marginBottom={5}>

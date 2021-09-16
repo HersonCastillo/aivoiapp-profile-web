@@ -125,16 +125,26 @@ const Profile = (): ReactElement => {
     files,
   }: IDocumentsFormData) => {
     setIsLoading(true);
-    const [duiImage, circulationCardImage, licenseCardImage, solvencyPncImage] =
-      files;
-    const response = await updateDriverDocumentData(
-      {
-        num_card_circulation: circulationCard,
-        num_licence: drivingCard,
+    let dataFiles = {};
+    if (files.length) {
+      const [
+        duiImage,
+        circulationCardImage,
+        licenseCardImage,
+        solvencyPncImage,
+      ] = files;
+      dataFiles = {
         photo_dui: duiImage.content,
         photo_licence: licenseCardImage.content,
         photo_solvency_pnc: solvencyPncImage.content,
         photo_background: circulationCardImage.content,
+      };
+    }
+    const response = await updateDriverDocumentData(
+      {
+        num_card_circulation: circulationCard,
+        num_licence: drivingCard,
+        ...dataFiles,
       },
       user?.user_id!,
     );

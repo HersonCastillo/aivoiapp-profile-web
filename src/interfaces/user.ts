@@ -18,4 +18,13 @@ export interface IUser {
   updated_at?: string;
   data_bank_complete: 0 | 1;
   user_id?: number;
+  num_card_circulation?: string;
+  num_licence?: string;
+  photo_background?: string;
+  photo_dui?: string;
+  photo_licence?: string;
+  photo_solvency_pnc?: string;
+  bank_id?: number;
+  num_account?: string;
+  type_account?: string;
 }

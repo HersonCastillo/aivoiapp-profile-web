@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useContext, useEffect, useState } from 'react';
 import {
   Select,
   Box,
@@ -8,20 +8,20 @@ import {
   FormHelperText,
   FormErrorMessage,
   SimpleGrid,
-  Text,
   Button,
-  Alert,
-  AlertIcon,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { getBanks } from '../../services/profile.service';
 import { IBank } from '../../interfaces/bank';
+import { ProfileContext } from '../../store/profile.context';
 
 const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
+  const { user } = useContext(ProfileContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
   const [banks, setBanks] = useState<IBank[]>([]);
 
@@ -31,19 +31,15 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
     });
   }, [setBanks]);
 
+  useEffect(() => {
+    if (user && banks.length) {
+      setValue('bankId', user?.bank_id);
+    }
+  }, [setValue, banks, user]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <SimpleGrid columns={1} spacing={5}>
-        <Box>
-          <Alert status="info">
-            <AlertIcon />
-            <Text fontSize="xs">
-              Por temas de privacidad, no mostraremos la informacion completa.
-              Si necesitas actualizar algun dato tendras que llenar todo el
-              formulario.
-            </Text>
-          </Alert>
-        </Box>
         <Box>
           <FormControl id="bank" isRequired isInvalid={errors.bankId}>
             <FormLabel>Banco</FormLabel>
@@ -53,6 +49,7 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
                 required: true,
                 valueAsNumber: true,
               })}
+              defaultValue={user?.bank_id}
             >
               {banks.map(({ name, id }, index) => (
                 <option key={`bank-item-id-${index}`} value={id}>
@@ -78,6 +75,7 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
               {...register('accountType', {
                 required: true,
               })}
+              defaultValue={user?.type_account}
             >
               <option value="Ahorro">Ahorro</option>
               <option value="Corriente">Corriente</option>
@@ -101,6 +99,7 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
               {...register('accountNumber', {
                 required: true,
               })}
+              defaultValue={user?.num_account}
             />
             <FormHelperText>
               Numero de cuenta la cual recibira depositos.
