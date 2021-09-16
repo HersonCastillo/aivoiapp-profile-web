@@ -29,7 +29,11 @@ import './Profile.css';
 import { ProfileContext } from '../../store/profile.context';
 import ProfileTabs from '../../components/Profile/Tabs';
 import { IBasicInfoFormData } from '../../components/Profile/BasicInfo';
-import { getUserData, updateProfile } from '../../services/profile.service';
+import {
+  getUserData,
+  updateDriverDocumentData,
+  updateProfile,
+} from '../../services/profile.service';
 import { AIVOI_ROLES } from '../../utils/roles';
 import { useFilePicker } from 'use-file-picker';
 import { IBankInfoFormData } from '../../components/Profile/BankInfo';
@@ -57,6 +61,7 @@ const Profile = (): ReactElement => {
         photo: filesContent[0].content || user?.photo,
       },
       userRole ?? AIVOI_ROLES.CLIENT,
+      user?.user_id!,
     );
     setIsLoading(false);
     if (response) {
@@ -76,6 +81,7 @@ const Profile = (): ReactElement => {
         ...data,
       },
       userRole ?? AIVOI_ROLES.CLIENT,
+      user?.user_id!,
     );
     setIsLoading(false);
     if (response) {
@@ -88,12 +94,59 @@ const Profile = (): ReactElement => {
     }
   };
 
-  const onBankInfoEdit = (data: IBankInfoFormData) => {
-    console.log(data);
+  const onBankInfoEdit = async ({
+    bankId,
+    accountNumber,
+    accountType,
+  }: IBankInfoFormData) => {
+    setIsLoading(true);
+    const response = await updateDriverDocumentData(
+      {
+        bank_id: bankId,
+        num_account: accountNumber,
+        type_account: accountType,
+      },
+      user?.user_id!,
+    );
+    setIsLoading(false);
+    if (response) {
+      retrieveUserInfo();
+      toast({
+        title: 'Datos guardados',
+        description: 'Tu informacion fue actualizada sin problemas!',
+        status: 'success',
+      });
+    }
   };
 
-  const onDocumentsEdit = (data: IDocumentsFormData) => {
-    console.log(data);
+  const onDocumentsEdit = async ({
+    circulationCard,
+    drivingCard,
+    files,
+  }: IDocumentsFormData) => {
+    setIsLoading(true);
+    const [duiImage, circulationCardImage, licenseCardImage, solvencyPncImage] =
+      files;
+    const response = await updateDriverDocumentData(
+      {
+        num_card_circulation: circulationCard,
+        num_licence: drivingCard,
+        photo_dui: duiImage.content,
+        photo_licence: licenseCardImage.content,
+        photo_solvency_pnc: solvencyPncImage.content,
+        photo_background: circulationCardImage.content,
+      },
+      user?.user_id!,
+    );
+    setIsLoading(false);
+    if (response) {
+      retrieveUserInfo();
+      toast({
+        title: 'Datos guardados',
+        description: 'Tu informacion fue actualizada sin problemas!',
+        status: 'success',
+      });
+    }
   };
 
   const retrieveUserInfo = useCallback(() => {
@@ -107,13 +160,16 @@ const Profile = (): ReactElement => {
   useEffect(() => {
     if (user && isFirstLoad) {
       setFirstLoad(false);
-      if ('data_bank_complete' in user) {
-        setShowCompleteConfiguration(true);
-        setIsBankDataCompleted(Boolean(user?.data_bank_complete));
-      }
       retrieveUserInfo();
     }
   }, [user, isFirstLoad, setFirstLoad, retrieveUserInfo]);
+
+  useEffect(() => {
+    if (user && 'data_bank_complete' in user) {
+      setShowCompleteConfiguration(true);
+      setIsBankDataCompleted(Boolean(user?.data_bank_complete));
+    }
+  }, [user, setIsBankDataCompleted, setShowCompleteConfiguration]);
 
   return (
     <div className="profile__content">

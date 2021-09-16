@@ -6,19 +6,30 @@ import { IUser } from '../interfaces/user';
 import axiosApi from '../utils/axios';
 import { AIVOI_ROLES } from '../utils/roles';
 
-export const updateProfile = (user: Partial<IUser>, role: AIVOI_ROLES) => {
+export const updateProfile = (
+  user: Partial<IUser>,
+  role: AIVOI_ROLES,
+  user_id: number,
+) => {
   const path = `${API_URL}/${
     role === AIVOI_ROLES.CLIENT ? 'update_customer' : 'update_driver'
   }`;
-  return axiosApi.post<IAPIResponse<IUser>>(path, user);
+  return axiosApi.post<IAPIResponse<IUser>>(path, {
+    ...user,
+    user_id,
+  });
 };
 
 export const updateDriverDocumentData = (
   formData: Partial<IDriverInfoRequest>,
+  user_id: number,
 ) => {
   return axiosApi.post<IAPIResponse<unknown>>(
     `${API_URL}/update_document_driver`,
-    formData,
+    {
+      ...formData,
+      user_id,
+    },
   );
 };
 

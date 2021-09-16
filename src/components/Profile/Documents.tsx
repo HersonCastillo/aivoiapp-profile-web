@@ -47,7 +47,7 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
 
   const onSubmitData = (data: IDocumentsFormData) => {
     // 3 files allowed only
-    if (files.length === 3) {
+    if (files.length === 4) {
       onSubmit({
         ...data,
         files,
@@ -57,7 +57,7 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
         status: 'warning',
         title: 'Numero de archivos incorrecto',
         description:
-          'Debes de adjuntar un total de 3 fotos: tarjeta de circulacion, licencia de conducir y solvencia policial.',
+          'Debes de adjuntar un total de 4 fotos: DUI, tarjeta de circulacion, licencia de conducir y solvencia policial.',
       });
     }
   };
@@ -117,9 +117,10 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
             <AlertIcon />
             <p>
               Para hacer una correcta validacion de los datos anteriores, te
-              solicitamos que agregues una foto de tus documentos:&nbsp;
+              solicitamos que agregues una foto de tus documentos en el
+              siguiente orden:&nbsp;
               <b>
-                tarjeta de circulacion, licencia de conducir y solvencia
+                DUI, tarjeta de circulacion, licencia de conducir y solvencia
                 policial.
               </b>
             </p>
@@ -136,7 +137,12 @@ const Documents = ({ onSubmit, isLoading }: IDocumentsProps): ReactElement => {
         </Box>
         <Box>
           {files.map((file, index) => (
-            <Tag size="lg" marginBottom={1} key={`file-item-id-${index}`}>
+            <Tag
+              size="lg"
+              marginBottom={1}
+              marginLeft={1}
+              key={`file-item-id-${index}`}
+            >
               <Avatar
                 src={file.content}
                 size="xs"

@@ -38,18 +38,18 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
           <Alert status="info">
             <AlertIcon />
             <Text fontSize="xs">
-              Por terminos de seguridad, no mostraremos la informacion completa.
-              Si necesitas cambiar algun dato deberas actualizar todo el
+              Por temas de privacidad, no mostraremos la informacion completa.
+              Si necesitas actualizar algun dato tendras que llenar todo el
               formulario.
             </Text>
           </Alert>
         </Box>
         <Box>
-          <FormControl id="bank" isRequired isInvalid={errors.bankName}>
+          <FormControl id="bank" isRequired isInvalid={errors.bankId}>
             <FormLabel>Banco</FormLabel>
             <Select
               placeholder="Selecciona un banco"
-              {...register('bankName', {
+              {...register('bankId', {
                 required: true,
                 valueAsNumber: true,
               })}
@@ -61,7 +61,7 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
               ))}
             </Select>
             <FormErrorMessage>
-              {errors.bankName &&
+              {errors.bankId &&
                 'Debes seleccionar un banco al cual realizar depositos.'}
             </FormErrorMessage>
           </FormControl>
@@ -97,6 +97,7 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
             <FormLabel>Numero de cuenta</FormLabel>
             <Input
               placeholder="Numero de cuenta"
+              autoComplete="off"
               {...register('accountNumber', {
                 required: true,
               })}
@@ -120,7 +121,7 @@ const BankInfo = ({ onSubmit, isLoading }: IBankInfoProps): ReactElement => {
 };
 
 export interface IBankInfoFormData {
-  bankType: string;
+  bankId: number;
   accountType: string;
   accountNumber: string;
 }
