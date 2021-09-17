@@ -2,7 +2,7 @@
   "name": "aivoi-profile-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/management",
+  "homepage": "/",
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.6.7",
@@ -27,7 +27,9 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node server/main",
+    "postinstall": "cd server && npm i",
+    "start:dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
