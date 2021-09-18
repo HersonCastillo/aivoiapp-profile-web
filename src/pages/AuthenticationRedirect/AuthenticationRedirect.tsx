@@ -31,7 +31,7 @@ const AuthenticationRedirect = (): ReactElement => {
             sessionStorage.setItem('token', token);
             sessionStorage.setItem('user', userParsedToString);
             sessionStorage.setItem('role', role);
-            window.location.href = '#/profile';
+            window.location.href = '/profile';
           }, 1000);
         } catch (ex) {
           setIsRejected(true);
