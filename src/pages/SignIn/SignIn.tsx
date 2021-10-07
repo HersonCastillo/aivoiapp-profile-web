@@ -42,7 +42,7 @@ const SignIn = (): ReactElement => {
       if (token && user) {
         sessionStorage.setItem('role', String(role));
         sessionStorage.setItem('token', token);
-        sessionStorage.setItem('user', JSON.stringify(user));
+        sessionStorage.setItem('userId', String(user.user_id || ''));
 
         context.setToken(token);
         profileContext.setProfile(user, role);

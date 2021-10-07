@@ -33,10 +33,11 @@ export const updateDriverDocumentData = (
   );
 };
 
-export const getUserData = (user_id: number) => {
-  return axiosApi.post<IAPIResponse<IUser>>(`${API_URL}/get_user_data`, {
+export const getUserData = async (user_id: number) => {
+  const { data } = await axiosApi.post<IAPIResponse<IUser>>(`${API_URL}/get_user_data`, {
     user_id,
   });
+  return data;
 };
 
 export const getBanks = () => {

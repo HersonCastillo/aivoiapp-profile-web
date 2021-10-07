@@ -1,6 +1,5 @@
 import React, {
   ReactElement,
-  useCallback,
   useContext,
   useEffect,
   useState,
@@ -41,7 +40,6 @@ import { IDocumentsFormData } from '../../components/Profile/Documents';
 
 const Profile = (): ReactElement => {
   const toast = useToast();
-  const [isFirstLoad, setFirstLoad] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const { user, userRole, setProfile } = useContext(ProfileContext);
   const [showCompleteConfiguration, setShowCompleteConfiguration] =
@@ -159,20 +157,15 @@ const Profile = (): ReactElement => {
     }
   };
 
-  const retrieveUserInfo = useCallback(() => {
+  const retrieveUserInfo = () => {
     if (user) {
-      getUserData(user.user_id!).then((response) => {
-        setProfile(response.data?.data, userRole ?? AIVOI_ROLES.CLIENT);
-      });
+      getUserData(user.user_id!)
+        .then((response) => {
+          setProfile(response.data, userRole ?? AIVOI_ROLES.CLIENT);
+        })
+        .catch((error) => console.log(error));
     }
-  }, [user, userRole, setProfile]);
-
-  useEffect(() => {
-    if (user && isFirstLoad) {
-      setFirstLoad(false);
-      retrieveUserInfo();
-    }
-  }, [user, isFirstLoad, setFirstLoad, retrieveUserInfo]);
+  };
 
   useEffect(() => {
     if (user && 'data_bank_complete' in user) {

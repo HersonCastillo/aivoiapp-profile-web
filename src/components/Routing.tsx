@@ -5,11 +5,11 @@ import {
   Route,
   useHistory,
 } from 'react-router-dom';
-import { IUser } from '../interfaces/user';
 import AuthenticationRedirect from '../pages/AuthenticationRedirect/AuthenticationRedirect';
 import Profile from '../pages/Profile/Profile';
 import RecoverPassword from '../pages/RecoverPassword/RecoverPassword';
 import SignIn from '../pages/SignIn/SignIn';
+import { getUserData } from '../services/profile.service';
 import { AuthContext } from '../store/auth.context';
 import { ProfileContext } from '../store/profile.context';
 import { AIVOI_ROLES } from '../utils/roles';
@@ -21,20 +21,21 @@ const Routing = (): ReactElement => {
   const [isFirstLoad, setFirstLoad] = useState(true);
 
   useEffect(() => {
-    try {
-      const token = sessionStorage.getItem('token');
-      const user = sessionStorage.getItem('user');
-      const role = sessionStorage.getItem('role');
+    const token = sessionStorage.getItem('token');
+    const userId = sessionStorage.getItem('userId');
+    const role = sessionStorage.getItem('role');
 
-      if (token && user && role && isFirstLoad) {
-        const userDecoded: IUser = JSON.parse(user) ?? null;
-        profileContext.setProfile(userDecoded, +role || AIVOI_ROLES.CLIENT);
-        authContext.setToken(token ?? null);
+    if (token && userId && role && isFirstLoad) {
+      getUserData(+userId)
+        .then((response) => {
+          profileContext.setProfile(response.data, +role || AIVOI_ROLES.CLIENT);
+          authContext.setToken(token ?? null);
+          history?.push('/profile');
+        })
+        .catch(() => history?.push('/'));
         setFirstLoad(false);
-        history.push('/profile');
-      }
-    } catch (ex) {}
-  }, [profileContext, authContext, history, isFirstLoad, setFirstLoad]);
+    }
+  }, [profileContext, authContext, isFirstLoad, setFirstLoad, history]);
 
   return (
     <Router>
@@ -46,7 +47,7 @@ const Routing = (): ReactElement => {
                 <>
                   <Route
                     exact
-                    path="/linking"
+                    path="/linking/:userId/:role"
                     component={AuthenticationRedirect}
                   />
                   <Route exact path="/login" component={SignIn} />

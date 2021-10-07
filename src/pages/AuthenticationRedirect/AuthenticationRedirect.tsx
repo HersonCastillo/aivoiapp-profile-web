@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { CircularProgress } from '@chakra-ui/progress';
 import { Center } from '@chakra-ui/layout';
+import { useHistory, useParams } from 'react-router';
 import {
   Alert,
   AlertDescription,
@@ -12,27 +13,23 @@ import { useQueryParams } from '../../utils/useQueryParams';
 import './AuthenticationRedirect.css';
 
 const AuthenticationRedirect = (): ReactElement => {
+  const history = useHistory();
   const query = useQueryParams();
+  const { role, userId } = useParams<{ userId: string; role: string }>();
   const [isRejected, setIsRejected] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
     const token = query.get('token');
-    const user = query.get('user');
-    const role = query.get('role');
     const expired = query.get('expired');
 
     if (!expired) {
-      if (token && user && role) {
+      if (token && userId && role) {
         try {
-          const userDecoded = JSON.parse(atob(user));
-          const userParsedToString = JSON.stringify(userDecoded);
-          setTimeout(() => {
-            sessionStorage.setItem('token', token);
-            sessionStorage.setItem('user', userParsedToString);
-            sessionStorage.setItem('role', role);
-            window.location.href = '/profile';
-          }, 1000);
+          sessionStorage.setItem('token', token);
+          sessionStorage.setItem('userId', userId);
+          sessionStorage.setItem('role', role);
+          setTimeout(() => history.push('/profile'), 1000);
         } catch (ex) {
           setIsRejected(true);
         }
@@ -42,7 +39,7 @@ const AuthenticationRedirect = (): ReactElement => {
     } else {
       setIsExpired(true);
     }
-  }, [query, setIsRejected, setIsExpired]);
+  }, [query, role, userId, setIsRejected, setIsExpired, history]);
 
   return (
     <div className="authentication-redirect__container">
